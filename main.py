@@ -220,13 +220,50 @@ def turn( a, b, c ):
 
 def buildTristrips( triangles ):
 
-    count = 0
-
-    # [YOUR CODE HERE]
-    #
-    # Increment 'count' every time you *start* a new triStrip.
-
-    print( 'Generated %d tristrips' % count )
+    #Checks if triangle is already in a strip
+      def inStrip(tri):
+          if tri.nextTri == None and tri.prevTri == None:
+              return False
+          else:
+              return True
+      #inStrip()
+      
+      count = 0
+      adj = 1
+      #Start at corners then sides
+      while adj <4:
+          for i in triangles:
+              #print(adj)
+              if len(i.adjTris) <= adj: #continue if small
+                  curTri = i
+                  prev = None
+                  flag = 1;
+                  while flag:
+                      if not(inStrip(curTri)): #continue if this triangle is not part of a strip
+                          possTri = [] #list of next possible triangles
+                          numAdj = 4
+                          optTri = None
+                          for k in curTri.adjTris: #Checks to see if adjacent are in a strip
+                              if not(inStrip(k)): #if not in a strip add to list of next possible tris
+                                  possTri.append(k)
+                          if len(possTri) == 0: #end strip if no more triangles
+                              flag = 0
+                              count +=1 #Strip Completed (add 1)
+                              break
+                          for l in possTri: #Find next tri with least adj tris
+                              if len(l.adjTris) < numAdj:
+                                  numAdj = len(l.adjTris)
+                                  optTri = l
+                          #Set optimal tri to next
+                          curTri.nextTri = optTri
+                          prev = curTri
+                          curTri = optTri
+                          curTri.prev = curTri
+                      else:
+                          flag = 0
+          adj +=1
+ 
+      print( 'Generated %d tristrips' % count )
 
 
 # ================================================================
