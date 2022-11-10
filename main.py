@@ -219,56 +219,41 @@ def turn( a, b, c ):
 
 
 def buildTristrips( triangles ):
-
-    #Checks if triangle is already in a strip
-      def inStrip(tri):
-          if tri.nextTri == None and tri.prevTri == None:
-              return False
-          else:
-              return True
-      #inStrip()
       
-      count = 0
-      adj = 1
-      #Start at corners then sides
-      while adj <4:
+      strips = 0
+      corner = 0
+      while corner <= 3:
           for i in triangles:
-              #print(adj)
-              if len(i.adjTris) <= adj: #continue if small
+              if len(i.adjTris) <= corner:
                   curTri = i
-                  prev = None
-                  flag = 1
-                  while flag:
+                  prevTri = None
+                  run = 1
+                  while run:
 
-                      if not(inStrip(curTri)): #continue if this triangle is not part of a strip
-                          possTri = [] #list of next possible triangles
+                      if (curTri.nextTri == None and curTri.prevTri == None):
+                          possTri = []
                           numAdj = 4
-                          optTri = None
+                          optimal = None
 
-                          for k in curTri.adjTris: #Checks to see if adjacent are in a strip
-                              if not(inStrip(k)): #if not in a strip add to list of next possible tris
-                                  possTri.append(k)
-
-                          if len(possTri) == 0: #end strip if no more triangles
+                          for search in curTri.adjTris: 
+                              if (search.nextTri == None and search.prevTri == None):
+                                  possTri.append(search)
+                                  if len(search.adjTris) <= numAdj:
+                                    optimal = search
+                            
+                          if len(possTri) == 0:
                               flag = 0
-                              count +=1 #Strip Completed (add 1)
+                              strips +=1
                               break
-
-                          for l in possTri: #Find next tri with least adj tris
-                              if len(l.adjTris) < numAdj:
-                                  numAdj = len(l.adjTris)
-                                  optTri = l
-
-                          #Set optimal tri to next
-                          curTri.nextTri = optTri
-                          prev = curTri
-                          curTri = optTri
-                          curTri.prev = curTri
+                                  
+                          curTri.nextTri = optimal
+                          curTri.prevTri = curTri
+                          curTri = optimal
                       else:
-                          flag = 0
-          adj +=1
+                          run = 0
+          corner +=1
  
-      print( 'Generated %d tristrips' % count )
+      print('%d tristrips were generated' % strips)
 
 
 # ================================================================
